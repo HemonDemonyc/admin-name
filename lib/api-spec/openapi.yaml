@@ -10,13 +10,20 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: landing
+    description: Landing page content
+  - name: gallery
+    description: Gallery content
+  - name: storage
+    description: File storage
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +31,139 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: adminLogin
+      tags: [auth]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthStatus"
+        "401":
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      operationId: adminLogout
+      tags: [auth]
+      summary: Admin logout
+      responses:
+        "200":
+          description: Logged out
+
+  /auth/me:
+    get:
+      operationId: getAuthMe
+      tags: [auth]
+      summary: Get current session
+      responses:
+        "200":
+          description: Session info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthStatus"
+
+  /landing:
+    get:
+      operationId: getLanding
+      tags: [landing]
+      summary: Get landing page content
+      responses:
+        "200":
+          description: Landing page data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LandingPage"
+
+  /admin/landing:
+    put:
+      operationId: updateLanding
+      tags: [landing]
+      summary: Update landing page content (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateLandingBody"
+      responses:
+        "200":
+          description: Updated landing page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LandingPage"
+        "401":
+          description: Unauthorized
+
+  /gallery:
+    get:
+      operationId: getGallery
+      tags: [gallery]
+      summary: Get gallery content
+      responses:
+        "200":
+          description: Gallery data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Gallery"
+
+  /admin/gallery:
+    put:
+      operationId: updateGallery
+      tags: [gallery]
+      summary: Update gallery content (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateGalleryBody"
+      responses:
+        "200":
+          description: Updated gallery
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Gallery"
+        "401":
+          description: Unauthorized
+
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [storage]
+      summary: Request a presigned upload URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestUploadUrlBody"
+      responses:
+        "200":
+          description: Presigned URL and object path
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestUploadUrlResponse"
+        "401":
+          description: Unauthorized
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +174,175 @@ components:
       required:
         - status
 
+    LoginBody:
+      type: object
+      properties:
+        password:
+          type: string
+      required:
+        - password
+
+    AuthStatus:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+      required:
+        - authenticated
+
+    SocialLink:
+      type: object
+      properties:
+        platform:
+          type: string
+        url:
+          type: string
+        label:
+          type: string
+      required:
+        - platform
+        - url
+        - label
+
+    LandingPhoto:
+      type: object
+      properties:
+        objectPath:
+          type: string
+        caption:
+          type: ["string", "null"]
+      required:
+        - objectPath
+
+    LandingPage:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        subtitle:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        appFileObjectPath:
+          type: ["string", "null"]
+        tutorialVideoObjectPath:
+          type: ["string", "null"]
+        tutorialVideoUrl:
+          type: ["string", "null"]
+        photos:
+          type: array
+          items:
+            $ref: "#/components/schemas/LandingPhoto"
+        socialLinks:
+          type: array
+          items:
+            $ref: "#/components/schemas/SocialLink"
+        buttonText:
+          type: ["string", "null"]
+      required:
+        - id
+        - title
+        - photos
+        - socialLinks
+
+    UpdateLandingBody:
+      type: object
+      properties:
+        title:
+          type: string
+        subtitle:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        appFileObjectPath:
+          type: ["string", "null"]
+        tutorialVideoObjectPath:
+          type: ["string", "null"]
+        tutorialVideoUrl:
+          type: ["string", "null"]
+        photos:
+          type: array
+          items:
+            $ref: "#/components/schemas/LandingPhoto"
+        socialLinks:
+          type: array
+          items:
+            $ref: "#/components/schemas/SocialLink"
+        buttonText:
+          type: ["string", "null"]
+
+    GalleryItem:
+      type: object
+      properties:
+        id:
+          type: string
+        objectPath:
+          type: string
+        type:
+          type: string
+          enum: [photo, video]
+        caption:
+          type: ["string", "null"]
+        order:
+          type: integer
+      required:
+        - id
+        - objectPath
+        - type
+        - order
+
+    Gallery:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/GalleryItem"
+      required:
+        - id
+        - items
+
+    UpdateGalleryBody:
+      type: object
+      properties:
+        title:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/GalleryItem"
+
+    RequestUploadUrlBody:
+      type: object
+      properties:
+        name:
+          type: string
+        size:
+          type: integer
+        contentType:
+          type: string
+      required:
+        - name
+        - size
+        - contentType
+
+    RequestUploadUrlResponse:
+      type: object
+      properties:
+        uploadURL:
+          type: string
+        objectPath:
+          type: string
+      required:
+        - uploadURL
+        - objectPath

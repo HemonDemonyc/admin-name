@@ -8,3 +8,105 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface LoginBody {
+  password: string;
+}
+
+export interface AuthStatus {
+  authenticated: boolean;
+}
+
+export interface SocialLink {
+  platform: string;
+  url: string;
+  label: string;
+}
+
+export interface LandingPhoto {
+  objectPath: string;
+  /** @nullable */
+  caption?: string | null;
+}
+
+export interface LandingPage {
+  id: number;
+  title: string;
+  /** @nullable */
+  subtitle?: string | null;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  appFileObjectPath?: string | null;
+  /** @nullable */
+  tutorialVideoObjectPath?: string | null;
+  /** @nullable */
+  tutorialVideoUrl?: string | null;
+  photos: LandingPhoto[];
+  socialLinks: SocialLink[];
+  /** @nullable */
+  buttonText?: string | null;
+}
+
+export interface UpdateLandingBody {
+  title?: string;
+  /** @nullable */
+  subtitle?: string | null;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  appFileObjectPath?: string | null;
+  /** @nullable */
+  tutorialVideoObjectPath?: string | null;
+  /** @nullable */
+  tutorialVideoUrl?: string | null;
+  photos?: LandingPhoto[];
+  socialLinks?: SocialLink[];
+  /** @nullable */
+  buttonText?: string | null;
+}
+
+export type GalleryItemType =
+  (typeof GalleryItemType)[keyof typeof GalleryItemType];
+
+export const GalleryItemType = {
+  photo: "photo",
+  video: "video",
+} as const;
+
+export interface GalleryItem {
+  id: string;
+  objectPath: string;
+  type: GalleryItemType;
+  /** @nullable */
+  caption?: string | null;
+  order: number;
+}
+
+export interface Gallery {
+  id: number;
+  /** @nullable */
+  title?: string | null;
+  /** @nullable */
+  description?: string | null;
+  items: GalleryItem[];
+}
+
+export interface UpdateGalleryBody {
+  /** @nullable */
+  title?: string | null;
+  /** @nullable */
+  description?: string | null;
+  items?: GalleryItem[];
+}
+
+export interface RequestUploadUrlBody {
+  name: string;
+  size: number;
+  contentType: string;
+}
+
+export interface RequestUploadUrlResponse {
+  uploadURL: string;
+  objectPath: string;
+}

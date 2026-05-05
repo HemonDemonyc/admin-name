@@ -8,9 +8,173 @@
 import * as zod from "zod";
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
+});
+
+/**
+ * @summary Admin login
+ */
+export const AdminLoginBody = zod.object({
+  password: zod.string(),
+});
+
+export const AdminLoginResponse = zod.object({
+  authenticated: zod.boolean(),
+});
+
+/**
+ * @summary Get current session
+ */
+export const GetAuthMeResponse = zod.object({
+  authenticated: zod.boolean(),
+});
+
+/**
+ * @summary Get landing page content
+ */
+export const GetLandingResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  subtitle: zod.string().nullish(),
+  description: zod.string().nullish(),
+  appFileObjectPath: zod.string().nullish(),
+  tutorialVideoObjectPath: zod.string().nullish(),
+  tutorialVideoUrl: zod.string().nullish(),
+  photos: zod.array(
+    zod.object({
+      objectPath: zod.string(),
+      caption: zod.string().nullish(),
+    }),
+  ),
+  socialLinks: zod.array(
+    zod.object({
+      platform: zod.string(),
+      url: zod.string(),
+      label: zod.string(),
+    }),
+  ),
+  buttonText: zod.string().nullish(),
+});
+
+/**
+ * @summary Update landing page content (admin)
+ */
+export const UpdateLandingBody = zod.object({
+  title: zod.string().optional(),
+  subtitle: zod.string().nullish(),
+  description: zod.string().nullish(),
+  appFileObjectPath: zod.string().nullish(),
+  tutorialVideoObjectPath: zod.string().nullish(),
+  tutorialVideoUrl: zod.string().nullish(),
+  photos: zod
+    .array(
+      zod.object({
+        objectPath: zod.string(),
+        caption: zod.string().nullish(),
+      }),
+    )
+    .optional(),
+  socialLinks: zod
+    .array(
+      zod.object({
+        platform: zod.string(),
+        url: zod.string(),
+        label: zod.string(),
+      }),
+    )
+    .optional(),
+  buttonText: zod.string().nullish(),
+});
+
+export const UpdateLandingResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  subtitle: zod.string().nullish(),
+  description: zod.string().nullish(),
+  appFileObjectPath: zod.string().nullish(),
+  tutorialVideoObjectPath: zod.string().nullish(),
+  tutorialVideoUrl: zod.string().nullish(),
+  photos: zod.array(
+    zod.object({
+      objectPath: zod.string(),
+      caption: zod.string().nullish(),
+    }),
+  ),
+  socialLinks: zod.array(
+    zod.object({
+      platform: zod.string(),
+      url: zod.string(),
+      label: zod.string(),
+    }),
+  ),
+  buttonText: zod.string().nullish(),
+});
+
+/**
+ * @summary Get gallery content
+ */
+export const GetGalleryResponse = zod.object({
+  id: zod.number(),
+  title: zod.string().nullish(),
+  description: zod.string().nullish(),
+  items: zod.array(
+    zod.object({
+      id: zod.string(),
+      objectPath: zod.string(),
+      type: zod.enum(["photo", "video"]),
+      caption: zod.string().nullish(),
+      order: zod.number(),
+    }),
+  ),
+});
+
+/**
+ * @summary Update gallery content (admin)
+ */
+export const UpdateGalleryBody = zod.object({
+  title: zod.string().nullish(),
+  description: zod.string().nullish(),
+  items: zod
+    .array(
+      zod.object({
+        id: zod.string(),
+        objectPath: zod.string(),
+        type: zod.enum(["photo", "video"]),
+        caption: zod.string().nullish(),
+        order: zod.number(),
+      }),
+    )
+    .optional(),
+});
+
+export const UpdateGalleryResponse = zod.object({
+  id: zod.number(),
+  title: zod.string().nullish(),
+  description: zod.string().nullish(),
+  items: zod.array(
+    zod.object({
+      id: zod.string(),
+      objectPath: zod.string(),
+      type: zod.enum(["photo", "video"]),
+      caption: zod.string().nullish(),
+      order: zod.number(),
+    }),
+  ),
+});
+
+/**
+ * @summary Request a presigned upload URL
+ */
+export const RequestUploadUrlBody = zod.object({
+  name: zod.string(),
+  size: zod.number(),
+  contentType: zod.string(),
+});
+
+export const RequestUploadUrlResponse = zod.object({
+  uploadURL: zod.string(),
+  objectPath: zod.string(),
 });
