@@ -9,6 +9,7 @@ import type { GalleryItem } from "./galleryItem";
 
 export interface Gallery {
   id: number;
+  userId: number;
   /** @nullable */
   title?: string | null;
   /** @nullable */

@@ -6,6 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface AuthStatus {
-  authenticated: boolean;
+export interface AuthUser {
+  id: number;
+  email: string;
+  name: string;
+  username: string;
 }

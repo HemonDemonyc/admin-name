@@ -1,6 +1,5 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
   description: API specification
@@ -9,15 +8,9 @@ servers:
     description: Base API path
 tags:
   - name: health
-    description: Health operations
   - name: auth
-    description: Authentication
-  - name: landing
-    description: Landing page content
-  - name: gallery
-    description: Gallery content
+  - name: pages
   - name: storage
-    description: File storage
 paths:
   /healthz:
     get:
@@ -32,11 +25,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
 
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Create account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterBody"
+      responses:
+        "201":
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUser"
+        "400":
+          description: Validation error
+        "409":
+          description: Email or username already taken
+
   /auth/login:
     post:
-      operationId: adminLogin
+      operationId: login
       tags: [auth]
-      summary: Admin login
+      summary: Login
       requestBody:
         required: true
         content:
@@ -49,50 +65,50 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthStatus"
+                $ref: "#/components/schemas/AuthUser"
         "401":
           description: Invalid credentials
 
   /auth/logout:
     post:
-      operationId: adminLogout
+      operationId: logout
       tags: [auth]
-      summary: Admin logout
+      summary: Logout
       responses:
         "200":
           description: Logged out
 
   /auth/me:
     get:
-      operationId: getAuthMe
+      operationId: getMe
       tags: [auth]
       summary: Get current session
       responses:
         "200":
-          description: Session info
+          description: Current user or null
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthStatus"
+                $ref: "#/components/schemas/AuthMeResponse"
 
-  /landing:
+  /my/landing:
     get:
-      operationId: getLanding
-      tags: [landing]
-      summary: Get landing page content
+      operationId: getMyLanding
+      tags: [pages]
+      summary: Get my landing page
       responses:
         "200":
-          description: Landing page data
+          description: Landing page
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/LandingPage"
-
-  /admin/landing:
+        "401":
+          description: Unauthorized
     put:
-      operationId: updateLanding
-      tags: [landing]
-      summary: Update landing page content (admin)
+      operationId: updateMyLanding
+      tags: [pages]
+      summary: Update my landing page
       requestBody:
         required: true
         content:
@@ -101,7 +117,7 @@ paths:
               $ref: "#/components/schemas/UpdateLandingBody"
       responses:
         "200":
-          description: Updated landing page
+          description: Updated
           content:
             application/json:
               schema:
@@ -109,24 +125,24 @@ paths:
         "401":
           description: Unauthorized
 
-  /gallery:
+  /my/gallery:
     get:
-      operationId: getGallery
-      tags: [gallery]
-      summary: Get gallery content
+      operationId: getMyGallery
+      tags: [pages]
+      summary: Get my gallery
       responses:
         "200":
-          description: Gallery data
+          description: Gallery
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Gallery"
-
-  /admin/gallery:
+        "401":
+          description: Unauthorized
     put:
-      operationId: updateGallery
-      tags: [gallery]
-      summary: Update gallery content (admin)
+      operationId: updateMyGallery
+      tags: [pages]
+      summary: Update my gallery
       requestBody:
         required: true
         content:
@@ -135,7 +151,7 @@ paths:
               $ref: "#/components/schemas/UpdateGalleryBody"
       responses:
         "200":
-          description: Updated gallery
+          description: Updated
           content:
             application/json:
               schema:
@@ -143,11 +159,53 @@ paths:
         "401":
           description: Unauthorized
 
+  /pages/{username}:
+    get:
+      operationId: getPublicLanding
+      tags: [pages]
+      summary: Get public landing page by username
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Landing page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LandingPage"
+        "404":
+          description: Not found
+
+  /pages/{username}/gallery:
+    get:
+      operationId: getPublicGallery
+      tags: [pages]
+      summary: Get public gallery by username
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Gallery
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Gallery"
+        "404":
+          description: Not found
+
   /storage/uploads/request-url:
     post:
       operationId: requestUploadUrl
       tags: [storage]
-      summary: Request a presigned upload URL
+      summary: Request presigned upload URL
       requestBody:
         required: true
         content:
@@ -156,7 +214,7 @@ paths:
               $ref: "#/components/schemas/RequestUploadUrlBody"
       responses:
         "200":
-          description: Presigned URL and object path
+          description: Presigned URL
           content:
             application/json:
               schema:
@@ -171,24 +229,51 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
+
+    RegisterBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+      required: [email, password, name, username]
 
     LoginBody:
       type: object
       properties:
+        email:
+          type: string
         password:
           type: string
-      required:
-        - password
+      required: [email, password]
 
-    AuthStatus:
+    AuthUser:
       type: object
       properties:
-        authenticated:
-          type: boolean
-      required:
-        - authenticated
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+      required: [id, email, name, username]
+
+    AuthMeResponse:
+      type: object
+      properties:
+        user:
+          oneOf:
+            - $ref: "#/components/schemas/AuthUser"
+            - type: "null"
+      required: [user]
 
     SocialLink:
       type: object
@@ -199,10 +284,7 @@ components:
           type: string
         label:
           type: string
-      required:
-        - platform
-        - url
-        - label
+      required: [platform, url, label]
 
     LandingPhoto:
       type: object
@@ -211,14 +293,19 @@ components:
           type: string
         caption:
           type: ["string", "null"]
-      required:
-        - objectPath
+      required: [objectPath]
 
     LandingPage:
       type: object
       properties:
         id:
           type: integer
+        userId:
+          type: integer
+        username:
+          type: string
+        template:
+          type: string
         title:
           type: string
         subtitle:
@@ -231,6 +318,8 @@ components:
           type: ["string", "null"]
         tutorialVideoUrl:
           type: ["string", "null"]
+        buttonText:
+          type: ["string", "null"]
         photos:
           type: array
           items:
@@ -239,17 +328,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SocialLink"
-        buttonText:
-          type: ["string", "null"]
-      required:
-        - id
-        - title
-        - photos
-        - socialLinks
+      required: [id, userId, username, template, title, photos, socialLinks]
 
     UpdateLandingBody:
       type: object
       properties:
+        template:
+          type: string
         title:
           type: string
         subtitle:
@@ -262,6 +347,8 @@ components:
           type: ["string", "null"]
         tutorialVideoUrl:
           type: ["string", "null"]
+        buttonText:
+          type: ["string", "null"]
         photos:
           type: array
           items:
@@ -270,8 +357,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SocialLink"
-        buttonText:
-          type: ["string", "null"]
 
     GalleryItem:
       type: object
@@ -287,16 +372,14 @@ components:
           type: ["string", "null"]
         order:
           type: integer
-      required:
-        - id
-        - objectPath
-        - type
-        - order
+      required: [id, objectPath, type, order]
 
     Gallery:
       type: object
       properties:
         id:
+          type: integer
+        userId:
           type: integer
         title:
           type: ["string", "null"]
@@ -306,9 +389,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/GalleryItem"
-      required:
-        - id
-        - items
+      required: [id, userId, items]
 
     UpdateGalleryBody:
       type: object
@@ -331,10 +412,7 @@ components:
           type: integer
         contentType:
           type: string
-      required:
-        - name
-        - size
-        - contentType
+      required: [name, size, contentType]
 
     RequestUploadUrlResponse:
       type: object
@@ -343,6 +421,4 @@ components:
           type: string
         objectPath:
           type: string
-      required:
-        - uploadURL
-        - objectPath
+      required: [uploadURL, objectPath]

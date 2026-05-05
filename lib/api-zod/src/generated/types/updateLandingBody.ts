@@ -9,6 +9,7 @@ import type { LandingPhoto } from "./landingPhoto";
 import type { SocialLink } from "./socialLink";
 
 export interface UpdateLandingBody {
+  template?: string;
   title?: string;
   /** @nullable */
   subtitle?: string | null;
@@ -20,8 +21,8 @@ export interface UpdateLandingBody {
   tutorialVideoObjectPath?: string | null;
   /** @nullable */
   tutorialVideoUrl?: string | null;
-  photos?: LandingPhoto[];
-  socialLinks?: SocialLink[];
   /** @nullable */
   buttonText?: string | null;
+  photos?: LandingPhoto[];
+  socialLinks?: SocialLink[];
 }

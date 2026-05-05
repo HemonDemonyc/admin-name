@@ -9,12 +9,27 @@ export interface HealthStatus {
   status: string;
 }
 
+export interface RegisterBody {
+  email: string;
+  password: string;
+  name: string;
+  username: string;
+}
+
 export interface LoginBody {
+  email: string;
   password: string;
 }
 
-export interface AuthStatus {
-  authenticated: boolean;
+export interface AuthUser {
+  id: number;
+  email: string;
+  name: string;
+  username: string;
+}
+
+export interface AuthMeResponse {
+  user: AuthUser | null;
 }
 
 export interface SocialLink {
@@ -31,6 +46,9 @@ export interface LandingPhoto {
 
 export interface LandingPage {
   id: number;
+  userId: number;
+  username: string;
+  template: string;
   title: string;
   /** @nullable */
   subtitle?: string | null;
@@ -42,13 +60,14 @@ export interface LandingPage {
   tutorialVideoObjectPath?: string | null;
   /** @nullable */
   tutorialVideoUrl?: string | null;
-  photos: LandingPhoto[];
-  socialLinks: SocialLink[];
   /** @nullable */
   buttonText?: string | null;
+  photos: LandingPhoto[];
+  socialLinks: SocialLink[];
 }
 
 export interface UpdateLandingBody {
+  template?: string;
   title?: string;
   /** @nullable */
   subtitle?: string | null;
@@ -60,10 +79,10 @@ export interface UpdateLandingBody {
   tutorialVideoObjectPath?: string | null;
   /** @nullable */
   tutorialVideoUrl?: string | null;
-  photos?: LandingPhoto[];
-  socialLinks?: SocialLink[];
   /** @nullable */
   buttonText?: string | null;
+  photos?: LandingPhoto[];
+  socialLinks?: SocialLink[];
 }
 
 export type GalleryItemType =
@@ -85,6 +104,7 @@ export interface GalleryItem {
 
 export interface Gallery {
   id: number;
+  userId: number;
   /** @nullable */
   title?: string | null;
   /** @nullable */

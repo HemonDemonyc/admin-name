@@ -6,7 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export * from "./authStatus";
+export * from "./authMeResponse";
+export * from "./authUser";
 export * from "./gallery";
 export * from "./galleryItem";
 export * from "./galleryItemType";
@@ -14,6 +15,7 @@ export * from "./healthStatus";
 export * from "./landingPage";
 export * from "./landingPhoto";
 export * from "./loginBody";
+export * from "./registerBody";
 export * from "./requestUploadUrlBody";
 export * from "./requestUploadUrlResponse";
 export * from "./socialLink";

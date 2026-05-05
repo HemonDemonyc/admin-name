@@ -1,40 +1,46 @@
 import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
-import { db, galleryTable } from "@workspace/db";
-import { UpdateGalleryBody, GetGalleryResponse } from "@workspace/api-zod";
+import { db, galleryTable, usersTable } from "@workspace/db";
+import { UpdateMyGalleryBody } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
-async function getOrCreateGallery() {
-  const rows = await db.select().from(galleryTable).limit(1);
-  if (rows.length > 0) return rows[0];
-  const [created] = await db.insert(galleryTable).values({ title: "Galeria", items: [] }).returning();
-  return created;
+function requireAuth(req: any, res: any): boolean {
+  if (!req.session.userId) {
+    res.status(401).json({ error: "Unauthorized" });
+    return false;
+  }
+  return true;
 }
 
-router.get("/gallery", async (req, res): Promise<void> => {
-  const gallery = await getOrCreateGallery();
-  res.json(GetGalleryResponse.parse(gallery));
+router.get("/my/gallery", async (req, res): Promise<void> => {
+  if (!requireAuth(req, res)) return;
+  const [row] = await db.select().from(galleryTable).where(eq(galleryTable.userId, req.session.userId!)).limit(1);
+  if (!row) { res.status(404).json({ error: "Not found" }); return; }
+  res.json(row);
 });
 
-router.put("/admin/gallery", async (req, res): Promise<void> => {
-  if (!req.session.authenticated) {
-    res.status(401).json({ error: "Unauthorized" });
-    return;
-  }
-  const parsed = UpdateGalleryBody.safeParse(req.body);
-  if (!parsed.success) {
-    req.log.warn({ errors: parsed.error.message }, "Invalid gallery update body");
-    res.status(400).json({ error: parsed.error.message });
-    return;
-  }
-  const gallery = await getOrCreateGallery();
+router.put("/my/gallery", async (req, res): Promise<void> => {
+  if (!requireAuth(req, res)) return;
+  const parsed = UpdateMyGalleryBody.safeParse(req.body);
+  if (!parsed.success) { res.status(400).json({ error: "Dados inválidos" }); return; }
+  const [existing] = await db.select().from(galleryTable).where(eq(galleryTable.userId, req.session.userId!)).limit(1);
+  if (!existing) { res.status(404).json({ error: "Not found" }); return; }
   const [updated] = await db
     .update(galleryTable)
     .set(parsed.data)
-    .where(eq(galleryTable.id, gallery.id))
+    .where(eq(galleryTable.id, existing.id))
     .returning();
-  res.json(GetGalleryResponse.parse(updated));
+  res.json(updated);
+});
+
+router.get("/pages/:username/gallery", async (req, res): Promise<void> => {
+  const { username } = req.params;
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.username, username)).limit(1);
+  if (!user) { res.status(404).json({ error: "Not found" }); return; }
+  const [row] = await db.select().from(galleryTable).where(eq(galleryTable.userId, user.id)).limit(1);
+  if (!row) { res.status(404).json({ error: "Not found" }); return; }
+  res.json(row);
 });
 
 export default router;

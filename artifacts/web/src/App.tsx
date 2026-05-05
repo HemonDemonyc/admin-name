@@ -2,12 +2,14 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import LandingPage from "@/pages/LandingPage";
-import GalleryPage from "@/pages/GalleryPage";
-import AdminLogin from "@/pages/AdminLogin";
-import AdminDashboard from "@/pages/AdminDashboard";
-import AdminLanding from "@/pages/AdminLanding";
-import AdminGallery from "@/pages/AdminGallery";
+import HomePage from "@/pages/HomePage";
+import LoginPage from "@/pages/LoginPage";
+import RegisterPage from "@/pages/RegisterPage";
+import DashboardPage from "@/pages/DashboardPage";
+import DashboardLanding from "@/pages/DashboardLanding";
+import DashboardGallery from "@/pages/DashboardGallery";
+import PublicLandingPage from "@/pages/PublicLandingPage";
+import PublicGalleryPage from "@/pages/PublicGalleryPage";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -15,18 +17,20 @@ const queryClient = new QueryClient();
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={LandingPage} />
-      <Route path="/gallery" component={GalleryPage} />
-      <Route path="/admin" component={AdminLogin} />
-      <Route path="/admin/dashboard" component={AdminDashboard} />
-      <Route path="/admin/landing" component={AdminLanding} />
-      <Route path="/admin/gallery" component={AdminGallery} />
+      <Route path="/" component={HomePage} />
+      <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
+      <Route path="/dashboard" component={DashboardPage} />
+      <Route path="/dashboard/landing" component={DashboardLanding} />
+      <Route path="/dashboard/gallery" component={DashboardGallery} />
+      <Route path="/p/:username" component={PublicLandingPage} />
+      <Route path="/p/:username/gallery" component={PublicGalleryPage} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -38,5 +42,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;

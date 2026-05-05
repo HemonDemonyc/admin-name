@@ -5,8 +5,8 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { AuthUser } from "./authUser";
 
-export interface LoginBody {
-  email: string;
-  password: string;
+export interface AuthMeResponse {
+  user: AuthUser | null;
 }

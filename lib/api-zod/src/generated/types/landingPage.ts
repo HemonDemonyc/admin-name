@@ -10,6 +10,9 @@ import type { SocialLink } from "./socialLink";
 
 export interface LandingPage {
   id: number;
+  userId: number;
+  username: string;
+  template: string;
   title: string;
   /** @nullable */
   subtitle?: string | null;
@@ -21,8 +24,8 @@ export interface LandingPage {
   tutorialVideoObjectPath?: string | null;
   /** @nullable */
   tutorialVideoUrl?: string | null;
-  photos: LandingPhoto[];
-  socialLinks: SocialLink[];
   /** @nullable */
   buttonText?: string | null;
+  photos: LandingPhoto[];
+  socialLinks: SocialLink[];
 }

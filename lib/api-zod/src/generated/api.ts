@@ -15,34 +15,60 @@ export const HealthCheckResponse = zod.object({
 });
 
 /**
- * @summary Admin login
+ * @summary Create account
  */
-export const AdminLoginBody = zod.object({
+export const RegisterBody = zod.object({
+  email: zod.string(),
+  password: zod.string(),
+  name: zod.string(),
+  username: zod.string(),
+});
+
+/**
+ * @summary Login
+ */
+export const LoginBody = zod.object({
+  email: zod.string(),
   password: zod.string(),
 });
 
-export const AdminLoginResponse = zod.object({
-  authenticated: zod.boolean(),
+export const LoginResponse = zod.object({
+  id: zod.number(),
+  email: zod.string(),
+  name: zod.string(),
+  username: zod.string(),
 });
 
 /**
  * @summary Get current session
  */
-export const GetAuthMeResponse = zod.object({
-  authenticated: zod.boolean(),
+export const GetMeResponse = zod.object({
+  user: zod.union([
+    zod.object({
+      id: zod.number(),
+      email: zod.string(),
+      name: zod.string(),
+      username: zod.string(),
+    }),
+    zod.null(),
+  ]),
 });
 
 /**
- * @summary Get landing page content
+ * @summary Get my landing page
  */
-export const GetLandingResponse = zod.object({
+export const GetMyLandingResponse = zod.object({
   id: zod.number(),
+  userId: zod.number(),
+  username: zod.string(),
+  template: zod.string(),
   title: zod.string(),
   subtitle: zod.string().nullish(),
   description: zod.string().nullish(),
   appFileObjectPath: zod.string().nullish(),
   tutorialVideoObjectPath: zod.string().nullish(),
   tutorialVideoUrl: zod.string().nullish(),
+  buttonText: zod.string().nullish(),
   photos: zod.array(
     zod.object({
       objectPath: zod.string(),
@@ -56,19 +82,20 @@ export const GetLandingResponse = zod.object({
       label: zod.string(),
     }),
   ),
-  buttonText: zod.string().nullish(),
 });
 
 /**
- * @summary Update landing page content (admin)
+ * @summary Update my landing page
  */
-export const UpdateLandingBody = zod.object({
+export const UpdateMyLandingBody = zod.object({
+  template: zod.string().optional(),
   title: zod.string().optional(),
   subtitle: zod.string().nullish(),
   description: zod.string().nullish(),
   appFileObjectPath: zod.string().nullish(),
   tutorialVideoObjectPath: zod.string().nullish(),
   tutorialVideoUrl: zod.string().nullish(),
+  buttonText: zod.string().nullish(),
   photos: zod
     .array(
       zod.object({
@@ -86,17 +113,20 @@ export const UpdateLandingBody = zod.object({
       }),
     )
     .optional(),
-  buttonText: zod.string().nullish(),
 });
 
-export const UpdateLandingResponse = zod.object({
+export const UpdateMyLandingResponse = zod.object({
   id: zod.number(),
+  userId: zod.number(),
+  username: zod.string(),
+  template: zod.string(),
   title: zod.string(),
   subtitle: zod.string().nullish(),
   description: zod.string().nullish(),
   appFileObjectPath: zod.string().nullish(),
   tutorialVideoObjectPath: zod.string().nullish(),
   tutorialVideoUrl: zod.string().nullish(),
+  buttonText: zod.string().nullish(),
   photos: zod.array(
     zod.object({
       objectPath: zod.string(),
@@ -110,14 +140,14 @@ export const UpdateLandingResponse = zod.object({
       label: zod.string(),
     }),
   ),
-  buttonText: zod.string().nullish(),
 });
 
 /**
- * @summary Get gallery content
+ * @summary Get my gallery
  */
-export const GetGalleryResponse = zod.object({
+export const GetMyGalleryResponse = zod.object({
   id: zod.number(),
+  userId: zod.number(),
   title: zod.string().nullish(),
   description: zod.string().nullish(),
   items: zod.array(
@@ -132,9 +162,9 @@ export const GetGalleryResponse = zod.object({
 });
 
 /**
- * @summary Update gallery content (admin)
+ * @summary Update my gallery
  */
-export const UpdateGalleryBody = zod.object({
+export const UpdateMyGalleryBody = zod.object({
   title: zod.string().nullish(),
   description: zod.string().nullish(),
   items: zod
@@ -150,8 +180,9 @@ export const UpdateGalleryBody = zod.object({
     .optional(),
 });
 
-export const UpdateGalleryResponse = zod.object({
+export const UpdateMyGalleryResponse = zod.object({
   id: zod.number(),
+  userId: zod.number(),
   title: zod.string().nullish(),
   description: zod.string().nullish(),
   items: zod.array(
@@ -166,7 +197,64 @@ export const UpdateGalleryResponse = zod.object({
 });
 
 /**
- * @summary Request a presigned upload URL
+ * @summary Get public landing page by username
+ */
+export const GetPublicLandingParams = zod.object({
+  username: zod.coerce.string(),
+});
+
+export const GetPublicLandingResponse = zod.object({
+  id: zod.number(),
+  userId: zod.number(),
+  username: zod.string(),
+  template: zod.string(),
+  title: zod.string(),
+  subtitle: zod.string().nullish(),
+  description: zod.string().nullish(),
+  appFileObjectPath: zod.string().nullish(),
+  tutorialVideoObjectPath: zod.string().nullish(),
+  tutorialVideoUrl: zod.string().nullish(),
+  buttonText: zod.string().nullish(),
+  photos: zod.array(
+    zod.object({
+      objectPath: zod.string(),
+      caption: zod.string().nullish(),
+    }),
+  ),
+  socialLinks: zod.array(
+    zod.object({
+      platform: zod.string(),
+      url: zod.string(),
+      label: zod.string(),
+    }),
+  ),
+});
+
+/**
+ * @summary Get public gallery by username
+ */
+export const GetPublicGalleryParams = zod.object({
+  username: zod.coerce.string(),
+});
+
+export const GetPublicGalleryResponse = zod.object({
+  id: zod.number(),
+  userId: zod.number(),
+  title: zod.string().nullish(),
+  description: zod.string().nullish(),
+  items: zod.array(
+    zod.object({
+      id: zod.string(),
+      objectPath: zod.string(),
+      type: zod.enum(["photo", "video"]),
+      caption: zod.string().nullish(),
+      order: zod.number(),
+    }),
+  ),
+});
+
+/**
+ * @summary Request presigned upload URL
  */
 export const RequestUploadUrlBody = zod.object({
   name: zod.string(),

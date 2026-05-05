@@ -1,4 +1,4 @@
-import { pgTable, serial, text, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -10,8 +10,9 @@ export const galleryItemSchema = z.object({
   order: z.number(),
 });
 
-export const galleryTable = pgTable("gallery", {
+export const galleryTable = pgTable("galleries", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
   title: text("title"),
   description: text("description"),
   items: jsonb("items").$type<z.infer<typeof galleryItemSchema>[]>().default([]),

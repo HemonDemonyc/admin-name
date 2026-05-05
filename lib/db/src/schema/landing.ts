@@ -1,4 +1,4 @@
-import { pgTable, serial, text, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -13,8 +13,10 @@ export const landingPhotoSchema = z.object({
   caption: z.string().nullish(),
 });
 
-export const landingPageTable = pgTable("landing_page", {
+export const landingPageTable = pgTable("landing_pages", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  template: text("template").notNull().default("vivid"),
   title: text("title").notNull().default("Meu App"),
   subtitle: text("subtitle"),
   description: text("description"),
