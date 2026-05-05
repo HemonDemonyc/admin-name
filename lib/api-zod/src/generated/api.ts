@@ -14,9 +14,6 @@ export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
 
-/**
- * @summary Create account
- */
 export const RegisterBody = zod.object({
   email: zod.string(),
   password: zod.string(),
@@ -24,9 +21,6 @@ export const RegisterBody = zod.object({
   username: zod.string(),
 });
 
-/**
- * @summary Login
- */
 export const LoginBody = zod.object({
   email: zod.string(),
   password: zod.string(),
@@ -39,9 +33,6 @@ export const LoginResponse = zod.object({
   username: zod.string(),
 });
 
-/**
- * @summary Get current session
- */
 export const GetMeResponse = zod.object({
   user: zod.union([
     zod.object({
@@ -54,9 +45,6 @@ export const GetMeResponse = zod.object({
   ]),
 });
 
-/**
- * @summary Get my landing page
- */
 export const GetMyLandingResponse = zod.object({
   id: zod.number(),
   userId: zod.number(),
@@ -69,6 +57,18 @@ export const GetMyLandingResponse = zod.object({
   tutorialVideoObjectPath: zod.string().nullish(),
   tutorialVideoUrl: zod.string().nullish(),
   buttonText: zod.string().nullish(),
+  logoObjectPath: zod.string().nullish(),
+  heroGradientFrom: zod.string().nullish(),
+  heroGradientTo: zod.string().nullish(),
+  heroBgType: zod.string().nullish(),
+  heroBgColor: zod.string().nullish(),
+  heroBgImageObjectPath: zod.string().nullish(),
+  heroTextDark: zod.boolean().nullish(),
+  ctaBgColor: zod.string().nullish(),
+  ctaTextColor: zod.string().nullish(),
+  pageBgColor: zod.string().nullish(),
+  pageTextColor: zod.string().nullish(),
+  accentColor: zod.string().nullish(),
   photos: zod.array(
     zod.object({
       objectPath: zod.string(),
@@ -82,11 +82,16 @@ export const GetMyLandingResponse = zod.object({
       label: zod.string(),
     }),
   ),
+  sections: zod.array(
+    zod.object({
+      id: zod.string(),
+      title: zod.string(),
+      body: zod.string(),
+      icon: zod.string().nullish(),
+    }),
+  ),
 });
 
-/**
- * @summary Update my landing page
- */
 export const UpdateMyLandingBody = zod.object({
   template: zod.string().optional(),
   title: zod.string().optional(),
@@ -96,6 +101,18 @@ export const UpdateMyLandingBody = zod.object({
   tutorialVideoObjectPath: zod.string().nullish(),
   tutorialVideoUrl: zod.string().nullish(),
   buttonText: zod.string().nullish(),
+  logoObjectPath: zod.string().nullish(),
+  heroGradientFrom: zod.string().nullish(),
+  heroGradientTo: zod.string().nullish(),
+  heroBgType: zod.string().nullish(),
+  heroBgColor: zod.string().nullish(),
+  heroBgImageObjectPath: zod.string().nullish(),
+  heroTextDark: zod.boolean().nullish(),
+  ctaBgColor: zod.string().nullish(),
+  ctaTextColor: zod.string().nullish(),
+  pageBgColor: zod.string().nullish(),
+  pageTextColor: zod.string().nullish(),
+  accentColor: zod.string().nullish(),
   photos: zod
     .array(
       zod.object({
@@ -113,6 +130,16 @@ export const UpdateMyLandingBody = zod.object({
       }),
     )
     .optional(),
+  sections: zod
+    .array(
+      zod.object({
+        id: zod.string(),
+        title: zod.string(),
+        body: zod.string(),
+        icon: zod.string().nullish(),
+      }),
+    )
+    .optional(),
 });
 
 export const UpdateMyLandingResponse = zod.object({
@@ -127,6 +154,18 @@ export const UpdateMyLandingResponse = zod.object({
   tutorialVideoObjectPath: zod.string().nullish(),
   tutorialVideoUrl: zod.string().nullish(),
   buttonText: zod.string().nullish(),
+  logoObjectPath: zod.string().nullish(),
+  heroGradientFrom: zod.string().nullish(),
+  heroGradientTo: zod.string().nullish(),
+  heroBgType: zod.string().nullish(),
+  heroBgColor: zod.string().nullish(),
+  heroBgImageObjectPath: zod.string().nullish(),
+  heroTextDark: zod.boolean().nullish(),
+  ctaBgColor: zod.string().nullish(),
+  ctaTextColor: zod.string().nullish(),
+  pageBgColor: zod.string().nullish(),
+  pageTextColor: zod.string().nullish(),
+  accentColor: zod.string().nullish(),
   photos: zod.array(
     zod.object({
       objectPath: zod.string(),
@@ -140,11 +179,16 @@ export const UpdateMyLandingResponse = zod.object({
       label: zod.string(),
     }),
   ),
+  sections: zod.array(
+    zod.object({
+      id: zod.string(),
+      title: zod.string(),
+      body: zod.string(),
+      icon: zod.string().nullish(),
+    }),
+  ),
 });
 
-/**
- * @summary Get my gallery
- */
 export const GetMyGalleryResponse = zod.object({
   id: zod.number(),
   userId: zod.number(),
@@ -155,15 +199,22 @@ export const GetMyGalleryResponse = zod.object({
       id: zod.string(),
       objectPath: zod.string(),
       type: zod.enum(["photo", "video"]),
+      title: zod.string().nullish(),
       caption: zod.string().nullish(),
       order: zod.number(),
+      likes: zod.number(),
+      comments: zod.array(
+        zod.object({
+          id: zod.string(),
+          author: zod.string(),
+          text: zod.string(),
+          timestamp: zod.string(),
+        }),
+      ),
     }),
   ),
 });
 
-/**
- * @summary Update my gallery
- */
 export const UpdateMyGalleryBody = zod.object({
   title: zod.string().nullish(),
   description: zod.string().nullish(),
@@ -173,8 +224,18 @@ export const UpdateMyGalleryBody = zod.object({
         id: zod.string(),
         objectPath: zod.string(),
         type: zod.enum(["photo", "video"]),
+        title: zod.string().nullish(),
         caption: zod.string().nullish(),
         order: zod.number(),
+        likes: zod.number(),
+        comments: zod.array(
+          zod.object({
+            id: zod.string(),
+            author: zod.string(),
+            text: zod.string(),
+            timestamp: zod.string(),
+          }),
+        ),
       }),
     )
     .optional(),
@@ -190,15 +251,22 @@ export const UpdateMyGalleryResponse = zod.object({
       id: zod.string(),
       objectPath: zod.string(),
       type: zod.enum(["photo", "video"]),
+      title: zod.string().nullish(),
       caption: zod.string().nullish(),
       order: zod.number(),
+      likes: zod.number(),
+      comments: zod.array(
+        zod.object({
+          id: zod.string(),
+          author: zod.string(),
+          text: zod.string(),
+          timestamp: zod.string(),
+        }),
+      ),
     }),
   ),
 });
 
-/**
- * @summary Get public landing page by username
- */
 export const GetPublicLandingParams = zod.object({
   username: zod.coerce.string(),
 });
@@ -215,6 +283,18 @@ export const GetPublicLandingResponse = zod.object({
   tutorialVideoObjectPath: zod.string().nullish(),
   tutorialVideoUrl: zod.string().nullish(),
   buttonText: zod.string().nullish(),
+  logoObjectPath: zod.string().nullish(),
+  heroGradientFrom: zod.string().nullish(),
+  heroGradientTo: zod.string().nullish(),
+  heroBgType: zod.string().nullish(),
+  heroBgColor: zod.string().nullish(),
+  heroBgImageObjectPath: zod.string().nullish(),
+  heroTextDark: zod.boolean().nullish(),
+  ctaBgColor: zod.string().nullish(),
+  ctaTextColor: zod.string().nullish(),
+  pageBgColor: zod.string().nullish(),
+  pageTextColor: zod.string().nullish(),
+  accentColor: zod.string().nullish(),
   photos: zod.array(
     zod.object({
       objectPath: zod.string(),
@@ -228,11 +308,16 @@ export const GetPublicLandingResponse = zod.object({
       label: zod.string(),
     }),
   ),
+  sections: zod.array(
+    zod.object({
+      id: zod.string(),
+      title: zod.string(),
+      body: zod.string(),
+      icon: zod.string().nullish(),
+    }),
+  ),
 });
 
-/**
- * @summary Get public gallery by username
- */
 export const GetPublicGalleryParams = zod.object({
   username: zod.coerce.string(),
 });
@@ -247,15 +332,67 @@ export const GetPublicGalleryResponse = zod.object({
       id: zod.string(),
       objectPath: zod.string(),
       type: zod.enum(["photo", "video"]),
+      title: zod.string().nullish(),
       caption: zod.string().nullish(),
       order: zod.number(),
+      likes: zod.number(),
+      comments: zod.array(
+        zod.object({
+          id: zod.string(),
+          author: zod.string(),
+          text: zod.string(),
+          timestamp: zod.string(),
+        }),
+      ),
     }),
   ),
 });
 
-/**
- * @summary Request presigned upload URL
- */
+export const LikeGalleryItemParams = zod.object({
+  username: zod.coerce.string(),
+  itemId: zod.coerce.string(),
+});
+
+export const LikeGalleryItemResponse = zod.object({
+  likes: zod.number(),
+});
+
+export const AddGalleryCommentParams = zod.object({
+  username: zod.coerce.string(),
+  itemId: zod.coerce.string(),
+});
+
+export const AddGalleryCommentBody = zod.object({
+  author: zod.string(),
+  text: zod.string(),
+});
+
+export const AddGalleryCommentResponse = zod.object({
+  id: zod.number(),
+  userId: zod.number(),
+  title: zod.string().nullish(),
+  description: zod.string().nullish(),
+  items: zod.array(
+    zod.object({
+      id: zod.string(),
+      objectPath: zod.string(),
+      type: zod.enum(["photo", "video"]),
+      title: zod.string().nullish(),
+      caption: zod.string().nullish(),
+      order: zod.number(),
+      likes: zod.number(),
+      comments: zod.array(
+        zod.object({
+          id: zod.string(),
+          author: zod.string(),
+          text: zod.string(),
+          timestamp: zod.string(),
+        }),
+      ),
+    }),
+  ),
+});
+
 export const RequestUploadUrlBody = zod.object({
   name: zod.string(),
   size: zod.number(),

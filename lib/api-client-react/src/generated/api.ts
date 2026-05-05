@@ -17,11 +17,13 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  AddCommentBody,
   AuthMeResponse,
   AuthUser,
   Gallery,
   HealthStatus,
   LandingPage,
+  LikeResponse,
   LoginBody,
   RegisterBody,
   RequestUploadUrlBody,
@@ -114,9 +116,6 @@ export function useHealthCheck<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-/**
- * @summary Create account
- */
 export const getRegisterUrl = () => {
   return `/api/auth/register`;
 };
@@ -177,9 +176,6 @@ export type RegisterMutationResult = NonNullable<
 export type RegisterMutationBody = BodyType<RegisterBody>;
 export type RegisterMutationError = ErrorType<void>;
 
-/**
- * @summary Create account
- */
 export const useRegister = <
   TError = ErrorType<void>,
   TContext = unknown,
@@ -200,9 +196,6 @@ export const useRegister = <
   return useMutation(getRegisterMutationOptions(options));
 };
 
-/**
- * @summary Login
- */
 export const getLoginUrl = () => {
   return `/api/auth/login`;
 };
@@ -263,9 +256,6 @@ export type LoginMutationResult = NonNullable<
 export type LoginMutationBody = BodyType<LoginBody>;
 export type LoginMutationError = ErrorType<void>;
 
-/**
- * @summary Login
- */
 export const useLogin = <
   TError = ErrorType<void>,
   TContext = unknown,
@@ -286,9 +276,6 @@ export const useLogin = <
   return useMutation(getLoginMutationOptions(options));
 };
 
-/**
- * @summary Logout
- */
 export const getLogoutUrl = () => {
   return `/api/auth/logout`;
 };
@@ -342,9 +329,6 @@ export type LogoutMutationResult = NonNullable<
 
 export type LogoutMutationError = ErrorType<unknown>;
 
-/**
- * @summary Logout
- */
 export const useLogout = <
   TError = ErrorType<unknown>,
   TContext = unknown,
@@ -365,9 +349,6 @@ export const useLogout = <
   return useMutation(getLogoutMutationOptions(options));
 };
 
-/**
- * @summary Get current session
- */
 export const getGetMeUrl = () => {
   return `/api/auth/me`;
 };
@@ -408,10 +389,6 @@ export const getGetMeQueryOptions = <
 export type GetMeQueryResult = NonNullable<Awaited<ReturnType<typeof getMe>>>;
 export type GetMeQueryError = ErrorType<unknown>;
 
-/**
- * @summary Get current session
- */
-
 export function useGetMe<
   TData = Awaited<ReturnType<typeof getMe>>,
   TError = ErrorType<unknown>,
@@ -428,9 +405,6 @@ export function useGetMe<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-/**
- * @summary Get my landing page
- */
 export const getGetMyLandingUrl = () => {
   return `/api/my/landing`;
 };
@@ -450,7 +424,7 @@ export const getGetMyLandingQueryKey = () => {
 
 export const getGetMyLandingQueryOptions = <
   TData = Awaited<ReturnType<typeof getMyLanding>>,
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: UseQueryOptions<
     Awaited<ReturnType<typeof getMyLanding>>,
@@ -477,15 +451,11 @@ export const getGetMyLandingQueryOptions = <
 export type GetMyLandingQueryResult = NonNullable<
   Awaited<ReturnType<typeof getMyLanding>>
 >;
-export type GetMyLandingQueryError = ErrorType<void>;
-
-/**
- * @summary Get my landing page
- */
+export type GetMyLandingQueryError = ErrorType<unknown>;
 
 export function useGetMyLanding<
   TData = Awaited<ReturnType<typeof getMyLanding>>,
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: UseQueryOptions<
     Awaited<ReturnType<typeof getMyLanding>>,
@@ -503,9 +473,6 @@ export function useGetMyLanding<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-/**
- * @summary Update my landing page
- */
 export const getUpdateMyLandingUrl = () => {
   return `/api/my/landing`;
 };
@@ -523,7 +490,7 @@ export const updateMyLanding = async (
 };
 
 export const getUpdateMyLandingMutationOptions = <
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -564,13 +531,10 @@ export type UpdateMyLandingMutationResult = NonNullable<
   Awaited<ReturnType<typeof updateMyLanding>>
 >;
 export type UpdateMyLandingMutationBody = BodyType<UpdateLandingBody>;
-export type UpdateMyLandingMutationError = ErrorType<void>;
+export type UpdateMyLandingMutationError = ErrorType<unknown>;
 
-/**
- * @summary Update my landing page
- */
 export const useUpdateMyLanding = <
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -589,9 +553,6 @@ export const useUpdateMyLanding = <
   return useMutation(getUpdateMyLandingMutationOptions(options));
 };
 
-/**
- * @summary Get my gallery
- */
 export const getGetMyGalleryUrl = () => {
   return `/api/my/gallery`;
 };
@@ -609,7 +570,7 @@ export const getGetMyGalleryQueryKey = () => {
 
 export const getGetMyGalleryQueryOptions = <
   TData = Awaited<ReturnType<typeof getMyGallery>>,
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: UseQueryOptions<
     Awaited<ReturnType<typeof getMyGallery>>,
@@ -636,15 +597,11 @@ export const getGetMyGalleryQueryOptions = <
 export type GetMyGalleryQueryResult = NonNullable<
   Awaited<ReturnType<typeof getMyGallery>>
 >;
-export type GetMyGalleryQueryError = ErrorType<void>;
-
-/**
- * @summary Get my gallery
- */
+export type GetMyGalleryQueryError = ErrorType<unknown>;
 
 export function useGetMyGallery<
   TData = Awaited<ReturnType<typeof getMyGallery>>,
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: UseQueryOptions<
     Awaited<ReturnType<typeof getMyGallery>>,
@@ -662,9 +619,6 @@ export function useGetMyGallery<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-/**
- * @summary Update my gallery
- */
 export const getUpdateMyGalleryUrl = () => {
   return `/api/my/gallery`;
 };
@@ -682,7 +636,7 @@ export const updateMyGallery = async (
 };
 
 export const getUpdateMyGalleryMutationOptions = <
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -723,13 +677,10 @@ export type UpdateMyGalleryMutationResult = NonNullable<
   Awaited<ReturnType<typeof updateMyGallery>>
 >;
 export type UpdateMyGalleryMutationBody = BodyType<UpdateGalleryBody>;
-export type UpdateMyGalleryMutationError = ErrorType<void>;
+export type UpdateMyGalleryMutationError = ErrorType<unknown>;
 
-/**
- * @summary Update my gallery
- */
 export const useUpdateMyGallery = <
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -748,9 +699,6 @@ export const useUpdateMyGallery = <
   return useMutation(getUpdateMyGalleryMutationOptions(options));
 };
 
-/**
- * @summary Get public landing page by username
- */
 export const getGetPublicLandingUrl = (username: string) => {
   return `/api/pages/${username}`;
 };
@@ -809,10 +757,6 @@ export type GetPublicLandingQueryResult = NonNullable<
 >;
 export type GetPublicLandingQueryError = ErrorType<void>;
 
-/**
- * @summary Get public landing page by username
- */
-
 export function useGetPublicLanding<
   TData = Awaited<ReturnType<typeof getPublicLanding>>,
   TError = ErrorType<void>,
@@ -836,9 +780,6 @@ export function useGetPublicLanding<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-/**
- * @summary Get public gallery by username
- */
 export const getGetPublicGalleryUrl = (username: string) => {
   return `/api/pages/${username}/gallery`;
 };
@@ -897,10 +838,6 @@ export type GetPublicGalleryQueryResult = NonNullable<
 >;
 export type GetPublicGalleryQueryError = ErrorType<void>;
 
-/**
- * @summary Get public gallery by username
- */
-
 export function useGetPublicGallery<
   TData = Awaited<ReturnType<typeof getPublicGallery>>,
   TError = ErrorType<void>,
@@ -924,9 +861,167 @@ export function useGetPublicGallery<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-/**
- * @summary Request presigned upload URL
- */
+export const getLikeGalleryItemUrl = (username: string, itemId: string) => {
+  return `/api/pages/${username}/gallery/${itemId}/like`;
+};
+
+export const likeGalleryItem = async (
+  username: string,
+  itemId: string,
+  options?: RequestInit,
+): Promise<LikeResponse> => {
+  return customFetch<LikeResponse>(getLikeGalleryItemUrl(username, itemId), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getLikeGalleryItemMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof likeGalleryItem>>,
+    TError,
+    { username: string; itemId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof likeGalleryItem>>,
+  TError,
+  { username: string; itemId: string },
+  TContext
+> => {
+  const mutationKey = ["likeGalleryItem"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof likeGalleryItem>>,
+    { username: string; itemId: string }
+  > = (props) => {
+    const { username, itemId } = props ?? {};
+
+    return likeGalleryItem(username, itemId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type LikeGalleryItemMutationResult = NonNullable<
+  Awaited<ReturnType<typeof likeGalleryItem>>
+>;
+
+export type LikeGalleryItemMutationError = ErrorType<unknown>;
+
+export const useLikeGalleryItem = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof likeGalleryItem>>,
+    TError,
+    { username: string; itemId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof likeGalleryItem>>,
+  TError,
+  { username: string; itemId: string },
+  TContext
+> => {
+  return useMutation(getLikeGalleryItemMutationOptions(options));
+};
+
+export const getAddGalleryCommentUrl = (username: string, itemId: string) => {
+  return `/api/pages/${username}/gallery/${itemId}/comments`;
+};
+
+export const addGalleryComment = async (
+  username: string,
+  itemId: string,
+  addCommentBody: AddCommentBody,
+  options?: RequestInit,
+): Promise<Gallery> => {
+  return customFetch<Gallery>(getAddGalleryCommentUrl(username, itemId), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(addCommentBody),
+  });
+};
+
+export const getAddGalleryCommentMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addGalleryComment>>,
+    TError,
+    { username: string; itemId: string; data: BodyType<AddCommentBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof addGalleryComment>>,
+  TError,
+  { username: string; itemId: string; data: BodyType<AddCommentBody> },
+  TContext
+> => {
+  const mutationKey = ["addGalleryComment"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addGalleryComment>>,
+    { username: string; itemId: string; data: BodyType<AddCommentBody> }
+  > = (props) => {
+    const { username, itemId, data } = props ?? {};
+
+    return addGalleryComment(username, itemId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AddGalleryCommentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof addGalleryComment>>
+>;
+export type AddGalleryCommentMutationBody = BodyType<AddCommentBody>;
+export type AddGalleryCommentMutationError = ErrorType<unknown>;
+
+export const useAddGalleryComment = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addGalleryComment>>,
+    TError,
+    { username: string; itemId: string; data: BodyType<AddCommentBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof addGalleryComment>>,
+  TError,
+  { username: string; itemId: string; data: BodyType<AddCommentBody> },
+  TContext
+> => {
+  return useMutation(getAddGalleryCommentMutationOptions(options));
+};
+
 export const getRequestUploadUrlUrl = () => {
   return `/api/storage/uploads/request-url`;
 };
@@ -944,7 +1039,7 @@ export const requestUploadUrl = async (
 };
 
 export const getRequestUploadUrlMutationOptions = <
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -985,13 +1080,10 @@ export type RequestUploadUrlMutationResult = NonNullable<
   Awaited<ReturnType<typeof requestUploadUrl>>
 >;
 export type RequestUploadUrlMutationBody = BodyType<RequestUploadUrlBody>;
-export type RequestUploadUrlMutationError = ErrorType<void>;
+export type RequestUploadUrlMutationError = ErrorType<unknown>;
 
-/**
- * @summary Request presigned upload URL
- */
 export const useRequestUploadUrl = <
-  TError = ErrorType<void>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<

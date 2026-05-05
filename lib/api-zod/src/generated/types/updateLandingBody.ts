@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { LandingPhoto } from "./landingPhoto";
+import type { LandingSection } from "./landingSection";
 import type { SocialLink } from "./socialLink";
 
 export interface UpdateLandingBody {
@@ -23,6 +24,31 @@ export interface UpdateLandingBody {
   tutorialVideoUrl?: string | null;
   /** @nullable */
   buttonText?: string | null;
+  /** @nullable */
+  logoObjectPath?: string | null;
+  /** @nullable */
+  heroGradientFrom?: string | null;
+  /** @nullable */
+  heroGradientTo?: string | null;
+  /** @nullable */
+  heroBgType?: string | null;
+  /** @nullable */
+  heroBgColor?: string | null;
+  /** @nullable */
+  heroBgImageObjectPath?: string | null;
+  /** @nullable */
+  heroTextDark?: boolean | null;
+  /** @nullable */
+  ctaBgColor?: string | null;
+  /** @nullable */
+  ctaTextColor?: string | null;
+  /** @nullable */
+  pageBgColor?: string | null;
+  /** @nullable */
+  pageTextColor?: string | null;
+  /** @nullable */
+  accentColor?: string | null;
   photos?: LandingPhoto[];
   socialLinks?: SocialLink[];
+  sections?: LandingSection[];
 }

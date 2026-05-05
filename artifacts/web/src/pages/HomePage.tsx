@@ -23,7 +23,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
       <nav className="border-b border-border px-6 py-4 flex items-center justify-between max-w-6xl mx-auto">
-        <span className="font-serif font-bold text-xl text-foreground">AppPage</span>
+        <span className="font-serif font-bold text-xl text-foreground">BTMPage</span>
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={() => setLocation("/login")}>Entrar</Button>
           <Button size="sm" onClick={() => setLocation("/register")}>Criar conta</Button>
@@ -110,7 +110,7 @@ export default function HomePage() {
       </section>
 
       <footer className="border-t border-border py-8 px-6 text-center text-xs text-muted-foreground">
-        AppPage — Todos os direitos reservados
+        BTMPage — Todos os direitos reservados
       </footer>
     </div>
   );

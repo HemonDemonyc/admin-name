@@ -10,6 +10,7 @@ tags:
   - name: health
   - name: auth
   - name: pages
+  - name: gallery-interactions
   - name: storage
 paths:
   /healthz:
@@ -29,7 +30,6 @@ paths:
     post:
       operationId: register
       tags: [auth]
-      summary: Create account
       requestBody:
         required: true
         content:
@@ -38,21 +38,18 @@ paths:
               $ref: "#/components/schemas/RegisterBody"
       responses:
         "201":
-          description: Account created
+          description: Created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthUser"
-        "400":
-          description: Validation error
         "409":
-          description: Email or username already taken
+          description: Conflict
 
   /auth/login:
     post:
       operationId: login
       tags: [auth]
-      summary: Login
       requestBody:
         required: true
         content:
@@ -61,31 +58,29 @@ paths:
               $ref: "#/components/schemas/LoginBody"
       responses:
         "200":
-          description: Logged in
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthUser"
         "401":
-          description: Invalid credentials
+          description: Unauthorized
 
   /auth/logout:
     post:
       operationId: logout
       tags: [auth]
-      summary: Logout
       responses:
         "200":
-          description: Logged out
+          description: OK
 
   /auth/me:
     get:
       operationId: getMe
       tags: [auth]
-      summary: Get current session
       responses:
         "200":
-          description: Current user or null
+          description: OK
           content:
             application/json:
               schema:
@@ -95,20 +90,16 @@ paths:
     get:
       operationId: getMyLanding
       tags: [pages]
-      summary: Get my landing page
       responses:
         "200":
-          description: Landing page
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/LandingPage"
-        "401":
-          description: Unauthorized
     put:
       operationId: updateMyLanding
       tags: [pages]
-      summary: Update my landing page
       requestBody:
         required: true
         content:
@@ -117,32 +108,26 @@ paths:
               $ref: "#/components/schemas/UpdateLandingBody"
       responses:
         "200":
-          description: Updated
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/LandingPage"
-        "401":
-          description: Unauthorized
 
   /my/gallery:
     get:
       operationId: getMyGallery
       tags: [pages]
-      summary: Get my gallery
       responses:
         "200":
-          description: Gallery
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Gallery"
-        "401":
-          description: Unauthorized
     put:
       operationId: updateMyGallery
       tags: [pages]
-      summary: Update my gallery
       requestBody:
         required: true
         content:
@@ -151,19 +136,16 @@ paths:
               $ref: "#/components/schemas/UpdateGalleryBody"
       responses:
         "200":
-          description: Updated
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Gallery"
-        "401":
-          description: Unauthorized
 
   /pages/{username}:
     get:
       operationId: getPublicLanding
       tags: [pages]
-      summary: Get public landing page by username
       parameters:
         - name: username
           in: path
@@ -172,7 +154,7 @@ paths:
             type: string
       responses:
         "200":
-          description: Landing page
+          description: OK
           content:
             application/json:
               schema:
@@ -184,7 +166,6 @@ paths:
     get:
       operationId: getPublicGallery
       tags: [pages]
-      summary: Get public gallery by username
       parameters:
         - name: username
           in: path
@@ -193,7 +174,7 @@ paths:
             type: string
       responses:
         "200":
-          description: Gallery
+          description: OK
           content:
             application/json:
               schema:
@@ -201,11 +182,62 @@ paths:
         "404":
           description: Not found
 
+  /pages/{username}/gallery/{itemId}/like:
+    post:
+      operationId: likeGalleryItem
+      tags: [gallery-interactions]
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LikeResponse"
+
+  /pages/{username}/gallery/{itemId}/comments:
+    post:
+      operationId: addGalleryComment
+      tags: [gallery-interactions]
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddCommentBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Gallery"
+
   /storage/uploads/request-url:
     post:
       operationId: requestUploadUrl
       tags: [storage]
-      summary: Request presigned upload URL
       requestBody:
         required: true
         content:
@@ -214,13 +246,11 @@ paths:
               $ref: "#/components/schemas/RequestUploadUrlBody"
       responses:
         "200":
-          description: Presigned URL
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/RequestUploadUrlResponse"
-        "401":
-          description: Unauthorized
 
 components:
   schemas:
@@ -234,36 +264,26 @@ components:
     RegisterBody:
       type: object
       properties:
-        email:
-          type: string
-        password:
-          type: string
-        name:
-          type: string
-        username:
-          type: string
+        email: {type: string}
+        password: {type: string}
+        name: {type: string}
+        username: {type: string}
       required: [email, password, name, username]
 
     LoginBody:
       type: object
       properties:
-        email:
-          type: string
-        password:
-          type: string
+        email: {type: string}
+        password: {type: string}
       required: [email, password]
 
     AuthUser:
       type: object
       properties:
-        id:
-          type: integer
-        email:
-          type: string
-        name:
-          type: string
-        username:
-          type: string
+        id: {type: integer}
+        email: {type: string}
+        name: {type: string}
+        username: {type: string}
       required: [id, email, name, username]
 
     AuthMeResponse:
@@ -278,48 +298,53 @@ components:
     SocialLink:
       type: object
       properties:
-        platform:
-          type: string
-        url:
-          type: string
-        label:
-          type: string
+        platform: {type: string}
+        url: {type: string}
+        label: {type: string}
       required: [platform, url, label]
 
     LandingPhoto:
       type: object
       properties:
-        objectPath:
-          type: string
-        caption:
-          type: ["string", "null"]
+        objectPath: {type: string}
+        caption: {type: ["string", "null"]}
       required: [objectPath]
+
+    LandingSection:
+      type: object
+      properties:
+        id: {type: string}
+        title: {type: string}
+        body: {type: string}
+        icon: {type: ["string", "null"]}
+      required: [id, title, body]
 
     LandingPage:
       type: object
       properties:
-        id:
-          type: integer
-        userId:
-          type: integer
-        username:
-          type: string
-        template:
-          type: string
-        title:
-          type: string
-        subtitle:
-          type: ["string", "null"]
-        description:
-          type: ["string", "null"]
-        appFileObjectPath:
-          type: ["string", "null"]
-        tutorialVideoObjectPath:
-          type: ["string", "null"]
-        tutorialVideoUrl:
-          type: ["string", "null"]
-        buttonText:
-          type: ["string", "null"]
+        id: {type: integer}
+        userId: {type: integer}
+        username: {type: string}
+        template: {type: string}
+        title: {type: string}
+        subtitle: {type: ["string", "null"]}
+        description: {type: ["string", "null"]}
+        appFileObjectPath: {type: ["string", "null"]}
+        tutorialVideoObjectPath: {type: ["string", "null"]}
+        tutorialVideoUrl: {type: ["string", "null"]}
+        buttonText: {type: ["string", "null"]}
+        logoObjectPath: {type: ["string", "null"]}
+        heroGradientFrom: {type: ["string", "null"]}
+        heroGradientTo: {type: ["string", "null"]}
+        heroBgType: {type: ["string", "null"]}
+        heroBgColor: {type: ["string", "null"]}
+        heroBgImageObjectPath: {type: ["string", "null"]}
+        heroTextDark: {type: ["boolean", "null"]}
+        ctaBgColor: {type: ["string", "null"]}
+        ctaTextColor: {type: ["string", "null"]}
+        pageBgColor: {type: ["string", "null"]}
+        pageTextColor: {type: ["string", "null"]}
+        accentColor: {type: ["string", "null"]}
         photos:
           type: array
           items:
@@ -328,27 +353,35 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SocialLink"
-      required: [id, userId, username, template, title, photos, socialLinks]
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/LandingSection"
+      required: [id, userId, username, template, title, photos, socialLinks, sections]
 
     UpdateLandingBody:
       type: object
       properties:
-        template:
-          type: string
-        title:
-          type: string
-        subtitle:
-          type: ["string", "null"]
-        description:
-          type: ["string", "null"]
-        appFileObjectPath:
-          type: ["string", "null"]
-        tutorialVideoObjectPath:
-          type: ["string", "null"]
-        tutorialVideoUrl:
-          type: ["string", "null"]
-        buttonText:
-          type: ["string", "null"]
+        template: {type: string}
+        title: {type: string}
+        subtitle: {type: ["string", "null"]}
+        description: {type: ["string", "null"]}
+        appFileObjectPath: {type: ["string", "null"]}
+        tutorialVideoObjectPath: {type: ["string", "null"]}
+        tutorialVideoUrl: {type: ["string", "null"]}
+        buttonText: {type: ["string", "null"]}
+        logoObjectPath: {type: ["string", "null"]}
+        heroGradientFrom: {type: ["string", "null"]}
+        heroGradientTo: {type: ["string", "null"]}
+        heroBgType: {type: ["string", "null"]}
+        heroBgColor: {type: ["string", "null"]}
+        heroBgImageObjectPath: {type: ["string", "null"]}
+        heroTextDark: {type: ["boolean", "null"]}
+        ctaBgColor: {type: ["string", "null"]}
+        ctaTextColor: {type: ["string", "null"]}
+        pageBgColor: {type: ["string", "null"]}
+        pageTextColor: {type: ["string", "null"]}
+        accentColor: {type: ["string", "null"]}
         photos:
           type: array
           items:
@@ -357,34 +390,45 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SocialLink"
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/LandingSection"
+
+    GalleryComment:
+      type: object
+      properties:
+        id: {type: string}
+        author: {type: string}
+        text: {type: string}
+        timestamp: {type: string}
+      required: [id, author, text, timestamp]
 
     GalleryItem:
       type: object
       properties:
-        id:
-          type: string
-        objectPath:
-          type: string
+        id: {type: string}
+        objectPath: {type: string}
         type:
           type: string
           enum: [photo, video]
-        caption:
-          type: ["string", "null"]
-        order:
-          type: integer
-      required: [id, objectPath, type, order]
+        title: {type: ["string", "null"]}
+        caption: {type: ["string", "null"]}
+        order: {type: integer}
+        likes: {type: integer}
+        comments:
+          type: array
+          items:
+            $ref: "#/components/schemas/GalleryComment"
+      required: [id, objectPath, type, order, likes, comments]
 
     Gallery:
       type: object
       properties:
-        id:
-          type: integer
-        userId:
-          type: integer
-        title:
-          type: ["string", "null"]
-        description:
-          type: ["string", "null"]
+        id: {type: integer}
+        userId: {type: integer}
+        title: {type: ["string", "null"]}
+        description: {type: ["string", "null"]}
         items:
           type: array
           items:
@@ -394,31 +438,37 @@ components:
     UpdateGalleryBody:
       type: object
       properties:
-        title:
-          type: ["string", "null"]
-        description:
-          type: ["string", "null"]
+        title: {type: ["string", "null"]}
+        description: {type: ["string", "null"]}
         items:
           type: array
           items:
             $ref: "#/components/schemas/GalleryItem"
 
+    LikeResponse:
+      type: object
+      properties:
+        likes: {type: integer}
+      required: [likes]
+
+    AddCommentBody:
+      type: object
+      properties:
+        author: {type: string}
+        text: {type: string}
+      required: [author, text]
+
     RequestUploadUrlBody:
       type: object
       properties:
-        name:
-          type: string
-        size:
-          type: integer
-        contentType:
-          type: string
+        name: {type: string}
+        size: {type: integer}
+        contentType: {type: string}
       required: [name, size, contentType]
 
     RequestUploadUrlResponse:
       type: object
       properties:
-        uploadURL:
-          type: string
-        objectPath:
-          type: string
+        uploadURL: {type: string}
+        objectPath: {type: string}
       required: [uploadURL, objectPath]

@@ -44,6 +44,14 @@ export interface LandingPhoto {
   caption?: string | null;
 }
 
+export interface LandingSection {
+  id: string;
+  title: string;
+  body: string;
+  /** @nullable */
+  icon?: string | null;
+}
+
 export interface LandingPage {
   id: number;
   userId: number;
@@ -62,8 +70,33 @@ export interface LandingPage {
   tutorialVideoUrl?: string | null;
   /** @nullable */
   buttonText?: string | null;
+  /** @nullable */
+  logoObjectPath?: string | null;
+  /** @nullable */
+  heroGradientFrom?: string | null;
+  /** @nullable */
+  heroGradientTo?: string | null;
+  /** @nullable */
+  heroBgType?: string | null;
+  /** @nullable */
+  heroBgColor?: string | null;
+  /** @nullable */
+  heroBgImageObjectPath?: string | null;
+  /** @nullable */
+  heroTextDark?: boolean | null;
+  /** @nullable */
+  ctaBgColor?: string | null;
+  /** @nullable */
+  ctaTextColor?: string | null;
+  /** @nullable */
+  pageBgColor?: string | null;
+  /** @nullable */
+  pageTextColor?: string | null;
+  /** @nullable */
+  accentColor?: string | null;
   photos: LandingPhoto[];
   socialLinks: SocialLink[];
+  sections: LandingSection[];
 }
 
 export interface UpdateLandingBody {
@@ -81,8 +114,40 @@ export interface UpdateLandingBody {
   tutorialVideoUrl?: string | null;
   /** @nullable */
   buttonText?: string | null;
+  /** @nullable */
+  logoObjectPath?: string | null;
+  /** @nullable */
+  heroGradientFrom?: string | null;
+  /** @nullable */
+  heroGradientTo?: string | null;
+  /** @nullable */
+  heroBgType?: string | null;
+  /** @nullable */
+  heroBgColor?: string | null;
+  /** @nullable */
+  heroBgImageObjectPath?: string | null;
+  /** @nullable */
+  heroTextDark?: boolean | null;
+  /** @nullable */
+  ctaBgColor?: string | null;
+  /** @nullable */
+  ctaTextColor?: string | null;
+  /** @nullable */
+  pageBgColor?: string | null;
+  /** @nullable */
+  pageTextColor?: string | null;
+  /** @nullable */
+  accentColor?: string | null;
   photos?: LandingPhoto[];
   socialLinks?: SocialLink[];
+  sections?: LandingSection[];
+}
+
+export interface GalleryComment {
+  id: string;
+  author: string;
+  text: string;
+  timestamp: string;
 }
 
 export type GalleryItemType =
@@ -98,8 +163,12 @@ export interface GalleryItem {
   objectPath: string;
   type: GalleryItemType;
   /** @nullable */
+  title?: string | null;
+  /** @nullable */
   caption?: string | null;
   order: number;
+  likes: number;
+  comments: GalleryComment[];
 }
 
 export interface Gallery {
@@ -118,6 +187,15 @@ export interface UpdateGalleryBody {
   /** @nullable */
   description?: string | null;
   items?: GalleryItem[];
+}
+
+export interface LikeResponse {
+  likes: number;
+}
+
+export interface AddCommentBody {
+  author: string;
+  text: string;
 }
 
 export interface RequestUploadUrlBody {

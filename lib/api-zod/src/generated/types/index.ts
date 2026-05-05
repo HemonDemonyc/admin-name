@@ -6,14 +6,18 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./addCommentBody";
 export * from "./authMeResponse";
 export * from "./authUser";
 export * from "./gallery";
+export * from "./galleryComment";
 export * from "./galleryItem";
 export * from "./galleryItemType";
 export * from "./healthStatus";
 export * from "./landingPage";
 export * from "./landingPhoto";
+export * from "./landingSection";
+export * from "./likeResponse";
 export * from "./loginBody";
 export * from "./registerBody";
 export * from "./requestUploadUrlBody";

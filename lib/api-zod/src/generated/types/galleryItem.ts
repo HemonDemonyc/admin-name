@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { GalleryComment } from "./galleryComment";
 import type { GalleryItemType } from "./galleryItemType";
 
 export interface GalleryItem {
@@ -12,6 +13,10 @@ export interface GalleryItem {
   objectPath: string;
   type: GalleryItemType;
   /** @nullable */
+  title?: string | null;
+  /** @nullable */
   caption?: string | null;
   order: number;
+  likes: number;
+  comments: GalleryComment[];
 }

@@ -28,7 +28,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-sidebar flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-sidebar-primary" />
       </div>
     );
   }
@@ -42,9 +42,9 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-sidebar text-sidebar-foreground">
       <header className="border-b border-sidebar-border px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
-        <div>
-          <span className="font-serif font-bold text-sidebar-foreground">AppPage</span>
-          <span className="text-sidebar-foreground/40 text-sm ml-3">Olá, {user.name}</span>
+        <div className="flex items-center gap-3">
+          <span className="font-serif font-bold text-sidebar-primary text-lg">BTMPage</span>
+          <span className="text-sidebar-foreground/40 text-sm">· Olá, {user.name}</span>
         </div>
         <Button
           variant="ghost"
@@ -61,65 +61,61 @@ export default function DashboardPage() {
       <main className="max-w-3xl mx-auto px-6 py-12 space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-sidebar-foreground">Dashboard</h1>
-          <p className="text-sidebar-foreground/50 mt-1 text-sm">
-            Gerencie o conteúdo das suas páginas públicas
-          </p>
+          <p className="text-sidebar-foreground/50 mt-1 text-sm">Gerencie o conteúdo das suas páginas públicas</p>
         </div>
 
         {/* Page link */}
         <div className="rounded-2xl border border-sidebar-border bg-sidebar-accent/50 p-4 flex items-center justify-between">
           <div>
             <p className="text-xs text-sidebar-foreground/40 mb-1">Sua página pública</p>
-            <p className="text-sm font-medium text-primary">{pageUrl}</p>
+            <p className="text-sm font-medium text-sidebar-primary">{pageUrl}</p>
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-1.5 border-sidebar-border text-sidebar-foreground/70"
-              onClick={() => window.open(pageUrl, "_blank")}
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              Abrir
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 border-sidebar-border text-sidebar-foreground/70"
+            onClick={() => window.open(pageUrl, "_blank")}
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            Abrir
+          </Button>
         </div>
 
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button
             onClick={() => setLocation("/dashboard/landing")}
-            className="rounded-2xl border border-sidebar-border bg-sidebar-accent/50 hover:border-primary/50 hover:bg-sidebar-accent transition-all p-6 text-left group"
+            className="rounded-2xl border border-sidebar-border bg-sidebar-accent/50 hover:border-sidebar-primary/50 hover:bg-sidebar-accent transition-all p-6 text-left group"
           >
-            <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/25 transition-colors">
-              <Layout className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-xl bg-sidebar-primary/15 flex items-center justify-center mb-4 group-hover:bg-sidebar-primary/25 transition-colors">
+              <Layout className="w-5 h-5 text-sidebar-primary" />
             </div>
             <h2 className="font-semibold text-sidebar-foreground mb-1">Landing Page</h2>
             <p className="text-sm text-sidebar-foreground/50">
-              Título, descrição, app, vídeo, fotos, redes sociais e template visual.
+              Design, cores, seções, app, vídeo, fotos e redes sociais.
             </p>
-            <span className="text-xs text-primary mt-3 block font-medium">Editar →</span>
+            <span className="text-xs text-sidebar-primary mt-3 block font-medium">Editar com preview ao vivo →</span>
           </button>
 
           <button
             onClick={() => setLocation("/dashboard/gallery")}
-            className="rounded-2xl border border-sidebar-border bg-sidebar-accent/50 hover:border-primary/50 hover:bg-sidebar-accent transition-all p-6 text-left group"
+            className="rounded-2xl border border-sidebar-border bg-sidebar-accent/50 hover:border-sidebar-primary/50 hover:bg-sidebar-accent transition-all p-6 text-left group"
           >
-            <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/25 transition-colors">
-              <Image className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-xl bg-sidebar-primary/15 flex items-center justify-center mb-4 group-hover:bg-sidebar-primary/25 transition-colors">
+              <Image className="w-5 h-5 text-sidebar-primary" />
             </div>
             <h2 className="font-semibold text-sidebar-foreground mb-1">Galeria Interna</h2>
             <p className="text-sm text-sidebar-foreground/50">
-              Álbum privado de fotos e vídeos acessível só pelo app.
+              Álbum privado com curtidas, comentários e títulos.
             </p>
-            <span className="text-xs text-primary mt-3 block font-medium">Editar →</span>
+            <span className="text-xs text-sidebar-primary mt-3 block font-medium">Editar →</span>
           </button>
         </div>
 
         <div className="rounded-2xl border border-sidebar-border bg-sidebar-accent/30 p-4">
           <p className="text-xs text-sidebar-foreground/40 mb-1">Link da galeria interna</p>
           <p className="text-sm font-medium text-sidebar-foreground/60">{galleryUrl}</p>
-          <p className="text-xs text-sidebar-foreground/30 mt-1">Coloque este link dentro do seu app</p>
+          <p className="text-xs text-sidebar-foreground/30 mt-1">Cole este link dentro do seu app para abrir a galeria</p>
         </div>
       </main>
     </div>
