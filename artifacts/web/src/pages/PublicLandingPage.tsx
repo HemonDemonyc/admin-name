@@ -1,15 +1,35 @@
 import { useRoute } from "wouter";
-import { useGetPublicLanding, getGetPublicLandingQueryKey } from "@workspace/api-client-react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import LandingPageRenderer, { type LandingData } from "@/components/LandingPageRenderer";
+import LandingPageRenderer, {
+  type LandingData,
+} from "@/components/LandingPageRenderer";
 
 export default function PublicLandingPage() {
   const [, params] = useRoute("/p/:username");
   const username = params?.username ?? "";
 
-  const { data: landing, isLoading, isError } = useGetPublicLanding(username, {
-    query: { queryKey: getGetPublicLandingQueryKey(username), enabled: !!username },
-  });
+  const [landing, setLanding] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    if (!username) return;
+
+    async function fetchLanding() {
+      try {
+        const res = await fetch(`/api/public/${username}`);
+        const data = await res.json();
+        setLanding(data);
+      } catch (err) {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchLanding();
+  }, [username]);
 
   if (isLoading) {
     return (
